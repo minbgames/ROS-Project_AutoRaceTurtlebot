@@ -1,0 +1,10 @@
+<launch>
+  <node pkg="sherlotics" type="videoPart_node" name="videoPart_node"/>
+  <node pkg="sherlotics" type="trafficPart_node" name="trafficPart_node"/>
+  <node pkg="sherlotics" type="linePart_node" name="linePart_node"/>
+  <node pkg="sherlotics" type="teleopPart.py" name="teleopPart"/>
+  <node pkg="sherlotics" type="blockBarLightPart_node" name="blockBarLightPart_node"/>
+  <node pkg="sherlotics" type="learningPart_node" name="learningPart_node"/>
+  <node pkg="sherlotics" type="PIDpart_node" name="PIDpart_node"/>
+  <node pkg="sherlotics" type="imshowPart_node" name="imshowPart_node"/>
+</launch>
