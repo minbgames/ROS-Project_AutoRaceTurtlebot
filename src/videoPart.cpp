@@ -23,7 +23,9 @@ int main(int argc, char **argv)
 
   while(1){
     cap >> image_raw;
-    resize( image_raw, image_raw, Size( 640, 480 ), 0, 0, CV_INTER_CUBIC );
+
+    resize( image_raw, image_raw, Size( WIDTH_SIZE, HEIGHT_SIZE ), 0, 0, CV_INTER_CUBIC );
+
     sensor_msgs::ImagePtr originalMsg;
     originalMsg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image_raw).toImageMsg();
     pub.publish(originalMsg);

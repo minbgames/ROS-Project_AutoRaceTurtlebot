@@ -10,8 +10,26 @@
 #include <sherlotics/variable.hpp>
 #include <cmath>
 
-using namespace cv;
 using namespace std;
+
+/********************************CHANGE******************************/
+int ShowBin_li = 0;
+
+Scalar lowerWhite_li(200);
+Scalar upperWhite_li(255);
+
+/********************************CHANGE******************************/
+
+Scalar lowerYellow_li(0, 0, 200);
+Scalar upperYellow_li(45, 100, 255);
+Scalar lowerBlue_li(100, 50, 0);
+Scalar upperBlue_li(140, 255, 255);
+
+#define GRAY_VERSION 1
+#define COLOR_VERSION 2
+#define MAIN_VERSION 3
+
+int lineVersion = GRAY_VERSION;
 
 Mat image;
 Mat leftCutImage;
@@ -49,8 +67,6 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   {
     ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
   }
-
-  resize(image, image, Size(640, 480), 0, 0, CV_INTER_CUBIC);
 
   leftCutImage = image(leftRect_li);
   rightCutImage = image(rightRect_li);
@@ -93,7 +109,9 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   dilate( binaryImage, binaryImage, getStructuringElement(MORPH_ELLIPSE, Size(MORSIZE, MORSIZE)) );
   erode(binaryImage, binaryImage, getStructuringElement(MORPH_ELLIPSE, Size(MORSIZE, MORSIZE)) );
 
-  imshow("Line",binaryImage);
+  if(ShowBin_li){
+      imshow("LineBin_li",binaryImage);
+  }
 
   vector<Vec4i> lines;
   HoughLinesP(binaryImage, lines, 1, CV_PI / 180, 10, 0, 3);

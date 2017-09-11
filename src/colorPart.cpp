@@ -5,8 +5,6 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sherlotics/variable.hpp>
 
-#define RESIZED_SIZE 100
-
 using namespace cv;
 using namespace std;
 
@@ -38,6 +36,8 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   {
     ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
   }
+
+  resize( image_raw, image_raw, Size( WIDTH_SIZE, HEIGHT_SIZE ), 0, 0, CV_INTER_CUBIC );
 
   cvtColor(image_raw, img_hsv, COLOR_BGR2HSV);
   cvtColor(image_raw, img_gray, COLOR_BGR2GRAY);

@@ -144,8 +144,6 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   line(frame, Point(l_x1_li,l_y1_li), Point(l_x2_li,l_y2_li), Scalar(0, 0, 0), 10); // l_line - black
   line(frame, Point(r_x1_li,r_y1_li), Point(r_x2_li,r_y2_li), Scalar(0, 0, 0), 10); // r_line - black
 
-  resize( frame, frame, Size( WIDTH_SIZE, HEIGHT_SIZE ), 0, 0, CV_INTER_CUBIC );
-
   imshow("ORIGINAL VIEW",frame);
 
   /* 표지판    차단바

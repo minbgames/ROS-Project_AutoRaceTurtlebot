@@ -6,9 +6,21 @@
 #include <sherlotics/variable.hpp>
 #include <string>
 
-
 using namespace cv;
 using namespace std;
+
+/********************************CHANGE******************************/
+
+int ShowBin_pic = 0;
+
+Scalar lowerBlue_tr(100, 100, 0);
+Scalar upperBlue_tr(130, 255, 255);
+Scalar lowerRed1_tr(0, 100, 0);
+Scalar upperRed1_tr(10, 255, 255);
+Scalar lowerRed2_tr(170, 100, 0);
+Scalar upperRed2_tr(179, 255, 255);
+
+/********************************CHANGE******************************/
 
 Mat image_raw;
 Mat roi_tr_1;
@@ -44,6 +56,9 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   {
     ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
   }
+
+  resize( image_raw, image_raw, Size( WIDTH_SIZE, HEIGHT_SIZE ), 0, 0, CV_INTER_CUBIC );
+
   roi_tr_1 =image_raw(Rect(leftRect_tr_1,topRect_tr_1,rightRect_tr_1-leftRect_tr_1,bottomRect_tr_1-topRect_tr_1));
   roi_tr_2 =image_raw(Rect(leftRect_tr_2,topRect_tr_2,rightRect_tr_2-leftRect_tr_2,bottomRect_tr_2-topRect_tr_2));
 
@@ -78,6 +93,11 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   //morphological closing 영역의 구멍 메우기
   dilate( binaryImage_2, binaryImage_2, getStructuringElement(MORPH_ELLIPSE, Size(MORSIZE, MORSIZE)) );
   erode(binaryImage_2, binaryImage_2, getStructuringElement(MORPH_ELLIPSE, Size(MORSIZE, MORSIZE)) );
+
+  if(ShowBin_pic){
+    imshow("PictureBin1_pic",binaryImage_1);
+    imshow("PictureBin2_pic",binaryImage_2);
+  }
 
   //라벨링
   Mat img_labels_1,stats_1, centroids_1;

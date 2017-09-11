@@ -12,6 +12,26 @@
 
 using namespace cv;
 
+/********************************CHANGE******************************/
+
+int ShowBin_tr = 0;
+
+#define TRAFFICRATIO_MAX 1.4
+#define TRAFFICRATIO_MIN 0.6
+#define TRAFFICWIDTH_MAX 80
+#define TRAFFICWIDTH_MIN 50
+#define TRAFFICHEIGHT_MAX 80
+#define TRAFFICHEIGHT_MIN 50
+
+Scalar lowerBlue_tr(100, 100, 0);
+Scalar upperBlue_tr(130, 255, 255);
+Scalar lowerRed1_tr(0, 100, 0);
+Scalar upperRed1_tr(10, 255, 255);
+Scalar lowerRed2_tr(170, 100, 0);
+Scalar upperRed2_tr(179, 255, 255);
+
+/********************************CHANGE******************************/
+
 Mat image_raw;
 Mat roi_tr_1;
 Mat roi_tr_2;
@@ -94,8 +114,10 @@ void trafficImageCallback(const sensor_msgs::ImageConstPtr& msg)
   int numOfLables_2 = connectedComponentsWithStats(binaryImage_2, img_labels_2,
                                              stats_2, centroids_2, 8,CV_32S);
 
-  imshow("Left_traffic",binaryImage_1);
-  imshow("Right_traffic",binaryImage_2);
+  if(ShowBin_tr){
+    imshow("Left_traffic_tr",binaryImage_1);
+    imshow("Right_traffic_tr",binaryImage_2);
+  }
 
   //영역박스 그리기
   int max_1 = -1, idx_1=0;

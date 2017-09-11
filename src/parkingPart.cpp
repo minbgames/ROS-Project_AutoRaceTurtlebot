@@ -64,7 +64,6 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   }
 
   cout << "Parking Part on??" << endl;
-  resize(frame, frame, Size(640, 480), 0, 0, CV_INTER_CUBIC);
   /**************subscribe******************/
 
   //if(0){

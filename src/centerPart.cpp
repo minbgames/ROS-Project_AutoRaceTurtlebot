@@ -57,7 +57,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
   }
 
-  resize( image_raw, image_raw, Size( 640, 480 ), 0, 0, CV_INTER_CUBIC );
+  resize( image_raw, image_raw, Size( WIDTH_SIZE, HEIGHT_SIZE ), 0, 0, CV_INTER_CUBIC );
 
   // cout << "robotMode: " << robotMode << endl;
   if(robotMode==NORMAL_MODE){

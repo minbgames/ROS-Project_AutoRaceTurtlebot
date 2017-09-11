@@ -13,6 +13,53 @@
 using namespace std;
 using namespace cv;
 
+/********************************CHANGE******************************/
+
+int ShowBin_l = 0;
+int ShowBin_b = 0;
+
+#define BLOCKRATIO_MAX 9.1
+#define BLOCKRATIO_MIN 5
+#define BLOCKWIDTH_MAX 550
+#define BLOCKWIDTH_MIN 300
+#define BLOCKHEIGHT_MAX 160
+#define BLOCKHEIGHT_MIN 50
+
+#define LIGHTRATIO_MAX 1.3
+#define LIGHTRATIO_MIN 0.7
+
+#define R_LIGHTWIDTH_MAX 40
+#define R_LIGHTWIDTH_MIN 10
+#define R_LIGHTHEIGHT_MAX 40
+#define R_LIGHTHEIGHT_MIN 10
+
+#define Y_LIGHTWIDTH_MAX 35
+#define Y_LIGHTWIDTH_MIN 5
+#define Y_LIGHTHEIGHT_MAX 35
+#define Y_LIGHTHEIGHT_MIN 5
+
+#define G_LIGHTWIDTH_MAX 35
+#define G_LIGHTWIDTH_MIN 5
+#define G_LIGHTHEIGHT_MAX 35
+#define G_LIGHTHEIGHT_MIN 5
+
+Scalar lowerWhite_b(200);
+Scalar upperwhite_b(255);
+Scalar lowerRed1_b(0, 100, 0);
+Scalar upperRed1_b(10, 255, 255);
+Scalar lowerRed2_b(170, 100, 0);
+Scalar upperRed2_b(179, 255, 255);
+Scalar lowerRed1_l(10, 50, 215);
+Scalar upperRed1_l(25, 100, 240);
+Scalar lowerRed2_l(0, 0, 0);
+Scalar upperRed2_l(0, 0, 0);
+Scalar lowerYellow_l(0, 0, 0);
+Scalar upperYellow_l(0, 0, 0);
+Scalar lowerGreen_l(80, 40, 190);
+Scalar upperGreen_l(100, 180, 255);
+
+/********************************CHANGE******************************/
+
 Mat frame;
 Mat frame_gray;
 Mat hsv_frame;
@@ -184,10 +231,14 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   ratio2 =(float)width2/height2;
   ratio3 =(float)width3/height3;
 
-  imshow("BlockBar",morphological_frame1);
-  imshow("Red_Light",morphological_frame2);
-  imshow("Green_Light",morphological_frame3);
-  
+  if(ShowBin_b){
+    imshow("BlockBar_b",morphological_frame1);
+  }
+  if(ShowBin_l){
+    imshow("Red_Light_l",morphological_frame2);
+    imshow("Green_Light_l",morphological_frame3);
+  }
+
   // cout << "width_r: " << width2 << endl;
   // cout << "height_r: " << height2 << endl;
   // cout << "ratio_r: " << ratio2 << endl;
