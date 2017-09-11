@@ -62,6 +62,7 @@ add_message_files(
   LIDARtoCENTER.msg
   CENTERtoPID.msg
   CENTERtoLIDAR.msg
+  CENTERtoTRAFFIC.msg
   LEARNINGtoCENTER.msg
 )
 

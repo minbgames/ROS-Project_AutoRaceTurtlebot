@@ -3,14 +3,16 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
+#include <sherlotics/CENTERtoTRAFFIC.h>
 #include <std_msgs/Int32MultiArray.h>
 #include <std_msgs/MultiArrayLayout.h>
 #include <std_msgs/MultiArrayDimension.h>
 #include <sherlotics/variable.hpp>
+#include <iostream>
 
 #define RESIZED_SIZE 50
 
-using namespace cv;
+using namespace std;
 
 /********************************CHANGE******************************/
 
@@ -59,6 +61,11 @@ int traffic_ok=0;
 image_transport::Publisher learningSignPub;
 
 ros::Publisher imshow_pub;
+
+void modeCallback(const sherlotics::CENTERtoTRAFFIC::ConstPtr& msg )
+{
+  robotMode=msg->data;
+}
 
 void trafficImageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
@@ -184,10 +191,11 @@ void trafficImageCallback(const sensor_msgs::ImageConstPtr& msg)
     //cvtColor(resizedImage, traffic_to_learning_image, CV_BGR2GRAY);
 
     //imshow("traffic_to_learning_image",traffic_to_learning_image);
-
-    sensor_msgs::ImagePtr learningSignMsg;
-    learningSignMsg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", traffic_to_learning_image).toImageMsg();
-    learningSignPub.publish(learningSignMsg);
+    if(robotMode==NORMAL_MODE){
+      sensor_msgs::ImagePtr learningSignMsg;
+      learningSignMsg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", traffic_to_learning_image).toImageMsg();
+      learningSignPub.publish(learningSignMsg);
+    }
   }
   else{
     left=0, top=0, width=0, height=0;
@@ -214,6 +222,7 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;
   image_transport::ImageTransport it(nh);
   image_transport::Subscriber sub = it.subscribe("normalMode_msg", QUEUESIZE, trafficImageCallback);
+  ros::Subscriber mode_sub = nh.subscribe("CENTERtoTRAFFIC_msg", QUEUESIZE, modeCallback);
 
   learningSignPub = it.advertise("TRAFFICtoLEARNING_msg", QUEUESIZE);
   imshow_pub = nh.advertise<std_msgs::Int32MultiArray>("TRAFFICtoIMSHOW_msg", QUEUESIZE);

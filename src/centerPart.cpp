@@ -5,6 +5,7 @@
 #include <sherlotics/LEARNINGtoCENTER.h>
 #include <sherlotics/CENTERtoPID.h>
 #include <sherlotics/CENTERtoLIDAR.h>
+#include <sherlotics/CENTERtoTRAFFIC.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
@@ -18,6 +19,7 @@ Mat image_raw;
 
 ros::Publisher mode_pub;
 ros::Publisher mode_lidar_pub;
+ros::Publisher mode_traffic_pub;
 image_transport::Publisher normal_pub;
 image_transport::Publisher parking_pub;
 image_transport::Publisher imshow_pub;
@@ -108,6 +110,10 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   mode_lidar_msg.data = robotMode;
   mode_lidar_pub.publish(mode_lidar_msg);
 
+  sherlotics::CENTERtoTRAFFIC mode_traffic_msg;
+  mode_traffic_msg.data = robotMode;
+  mode_traffic_pub.publish(mode_traffic_msg);
+
   waitKey(WAITKEYSIZE);
 }
 
@@ -127,6 +133,7 @@ int main(int argc, char **argv)
   parking_pub = it.advertise("parkingMode_msg", QUEUESIZE);
   mode_pub = nh.advertise<sherlotics::CENTERtoPID>("CENTERtoPID_msg", QUEUESIZE);
   mode_lidar_pub = nh.advertise<sherlotics::CENTERtoLIDAR>("CENTERtoLIDAR_msg", QUEUESIZE);
+  mode_traffic_pub = nh.advertise<sherlotics::CENTERtoTRAFFIC>("CENTERtoTRAFFIC_msg", QUEUESIZE);
 
   ros::spin();
 
