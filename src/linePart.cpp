@@ -17,11 +17,11 @@ int ShowBin_li = 0;
 
 Scalar lowerWhite_li(200);
 Scalar upperWhite_li(255);
+Scalar lowerYellow_li(0, 0, 200);
+Scalar upperYellow_li(45, 100, 255);
 
 /********************************CHANGE******************************/
 
-Scalar lowerYellow_li(0, 0, 200);
-Scalar upperYellow_li(45, 100, 255);
 Scalar lowerBlue_li(100, 50, 0);
 Scalar upperBlue_li(140, 255, 255);
 
@@ -51,11 +51,10 @@ Mat binaryImage;
 ros::Publisher pub;
 ros::Publisher imshow_pub;
 
-int l_x1=0,l_x2=0,l_y1=480,l_y2=480,r_x1=640,r_x2=640,r_y1=480,r_y2=480;
-int l_xMul, l_yMul, r_xMul, r_yMul, l_lineOk, r_lineOk, center_x=320;
-float  originLeft_x, originRight_x, left_x, right_x, l_descent, r_descent;
-int leftLine_ok, rightLine_ok;
-int l_line_count=0, r_line_count=0, lineSize_ok=1;
+float l_x1=0,l_x2=0,l_y1=480,l_y2=480,r_x1=640,r_x2=640,r_y1=480,r_y2=480;
+float l_xMul, l_yMul, r_xMul, r_yMul, center_x=320;
+float  originLeft_x, originRight_x, left_x, right_x, l_descent, r_descent, line_error=0;
+int leftLine_ok, rightLine_ok, l_lineOk, r_lineOk, l_line_count=0, r_line_count=0, lineSize_ok=1;
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
