@@ -121,7 +121,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 
   Vec4i params;
   int x1[500], y1[500], x2[500], y2[500];
-  int l_x1_sum, l_y1_sum, l_x2_sum, l_y2_sum, r_x1_sum, r_y1_sum, r_x2_sum, r_y2_sum;
+  int l_x1_sum=0, l_y1_sum=0, l_x2_sum=0, l_y2_sum=0, r_x1_sum=0, r_y1_sum=0, r_x2_sum=0, r_y2_sum=0;
 
   cout << "linesize: " << lines.size() << endl;
 
@@ -177,109 +177,109 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   leftLine_ok=0;
   rightLine_ok=0;
 
-  // if(l_line_count>10){
-  //     leftLine_ok=1;
-  //     l_x1 = l_x1_sum / l_line_count;
-  //     l_x2 = l_x2_sum / l_line_count;
-  //     l_y1 = l_y1_sum / l_line_count;
-  //     l_y2 = l_y2_sum / l_line_count;
-  //
-  //     originLeft_x = (480-l_y1)*(l_x1-l_x2)/(l_y1-l_y2)+l_x1;
-  //
-  //     l_descent = (float)(l_x1-l_x2)/(float)(l_y1-l_y2);
-  //     l_descent = fabsf(l_descent);
-  //     l_descent *= 160;
-  //
-  //     if(l_descent<200) l_descent=0;
-  //
-  //     left_x = originLeft_x + l_descent;
-  //     line(image, Point(l_x1,l_y1), Point(l_x2,l_y2), Scalar(0, 255, 255), 6);
-  // }
-  //
-  // if(r_line_count>10){
-  //     rightLine_ok=1;
-  //     r_x1 = r_x1_sum / r_line_count;
-  //     r_x2 = r_x2_sum / r_line_count;
-  //     r_y1 = r_y1_sum / r_line_count;
-  //     r_y2 = r_y2_sum / r_line_count;
-  //
-  //     originRight_x = (480-r_y1)*(r_x1-r_x2)/(r_y1-r_y2)+r_x1;
-  //
-  //     r_descent = (float)(r_x1-r_x2)/(float)(r_y1-r_y2);
-  //     r_descent = -fabsf(r_descent);
-  //     r_descent *= 160;
-  //
-  //     if(r_descent>-200) r_descent=0;
-  //
-  //     right_x = originRight_x + r_descent;
-  //     line(image, Point(r_x1,r_y1), Point(r_x2,r_y2), Scalar(0, 255, 255), 6);
-  //
-  // }
-  //
-  // // if(left_x < -350) left_x=-350;
-  // // if(left_x > 350) left_x=350;
-  // // if(right_x > 990) right_x=990;
-  // // if(right_x < 290) right_x=290;
-  //  if(left_x < -500) left_x=-500;
-  //  if(left_x > 500) left_x=500;
-  //  if(right_x > 1140) right_x=1140;
-  //  if(right_x < 140) right_x=140;
-  //
-  // center_x = left_x + right_x;
-  //
-  // if(disp_center_x){
-  //
-  //   cout << "originLeft_x: " << originLeft_x << endl;
-  //   cout << "originRight_x: " << originRight_x << endl;
-  //   cout << "l_descent: " << l_descent << endl;
-  //   cout << "r_descent: " << r_descent << endl;
-  //   cout << "left_x: " << left_x << endl;
-  //   cout << "right_x: " << right_x << endl;
-  //   cout << "center: " << center_x << endl;
-  //   cout << "error: " << 640-center_x << endl;
-  // }
-  //
-  // l_descent = 0;
-  // r_descent = 0;
-  //
-  // /****************publish******************/
-  //
-  // std_msgs::Int32MultiArray imshow_msg;
-  // imshow_msg.data.clear();
-  //
-  // int sendData[8] = {l_x1,l_x2,l_y1,l_y2,r_x1,r_x2,r_y1,r_y2};
-  // for (int i = 0; i < 8; i++)
-	// {
-	// 	imshow_msg.data.push_back(sendData[i]);
-	// }
-  // imshow_pub.publish(imshow_msg);
-  //
-  // /*------------------------------------------*/
-  //
-  // sherlotics::LINEtoPID send_msg;
-  // if(leftLine_ok==1 && rightLine_ok==1){ // 양쪽
-  //   send_msg.data = 640-center_x;
-  //   // cout << "---------------both!!!!!!!!------------" << endl;
-  //   // cout << "error: " << 640-center_x << endl;
-  // }
-  // else if(leftLine_ok==1 && rightLine_ok==0){ // 왼쪽만
-  //   send_msg.data = -left_x;
-  //   // cout << "---------------Left-----------------" << endl;
-  //   // cout << "error: " << -left_x << endl;
-  //
-  // }
-  // else if(leftLine_ok==0 && rightLine_ok==1){ // 오른쪽만
-  //   send_msg.data = 640-right_x;
-  //   // cout << "---------------Right-----------------" << endl;
-  //   // cout << "error: " << 640-right_x << endl;
-  // }
-  // else if(leftLine_ok==0 && rightLine_ok==0){ // 없음
-  //   send_msg.data = 0;
-  //   // cout << "-----------****nothing****-------------" << endl;
-  //   // cout << "error: 0" << endl;
-  // }
-  //
-  // pub.publish(send_msg);// + left - right
+  if(l_line_count>10){
+      leftLine_ok=1;
+      l_x1 = l_x1_sum / l_line_count;
+      l_x2 = l_x2_sum / l_line_count;
+      l_y1 = l_y1_sum / l_line_count;
+      l_y2 = l_y2_sum / l_line_count;
+
+      originLeft_x = (480-l_y1)*(l_x1-l_x2)/(l_y1-l_y2)+l_x1;
+
+      l_descent = (float)(l_x1-l_x2)/(float)(l_y1-l_y2);
+      l_descent = fabsf(l_descent);
+      l_descent *= 160;
+
+      if(l_descent<200) l_descent=0;
+
+      left_x = originLeft_x + l_descent;
+      line(image, Point(l_x1,l_y1), Point(l_x2,l_y2), Scalar(0, 255, 255), 6);
+  }
+
+  if(r_line_count>10){
+      rightLine_ok=1;
+      r_x1 = r_x1_sum / r_line_count;
+      r_x2 = r_x2_sum / r_line_count;
+      r_y1 = r_y1_sum / r_line_count;
+      r_y2 = r_y2_sum / r_line_count;
+
+      originRight_x = (480-r_y1)*(r_x1-r_x2)/(r_y1-r_y2)+r_x1;
+
+      r_descent = (float)(r_x1-r_x2)/(float)(r_y1-r_y2);
+      r_descent = -fabsf(r_descent);
+      r_descent *= 160;
+
+      if(r_descent>-200) r_descent=0;
+
+      right_x = originRight_x + r_descent;
+      line(image, Point(r_x1,r_y1), Point(r_x2,r_y2), Scalar(0, 255, 255), 6);
+
+  }
+
+  // if(left_x < -350) left_x=-350;
+  // if(left_x > 350) left_x=350;
+  // if(right_x > 990) right_x=990;
+  // if(right_x < 290) right_x=290;
+   if(left_x < -500) left_x=-500;
+   if(left_x > 500) left_x=500;
+   if(right_x > 1140) right_x=1140;
+   if(right_x < 140) right_x=140;
+
+  center_x = left_x + right_x;
+
+  if(disp_center_x){
+
+    cout << "originLeft_x: " << originLeft_x << endl;
+    cout << "originRight_x: " << originRight_x << endl;
+    cout << "l_descent: " << l_descent << endl;
+    cout << "r_descent: " << r_descent << endl;
+    cout << "left_x: " << left_x << endl;
+    cout << "right_x: " << right_x << endl;
+    cout << "center: " << center_x << endl;
+    cout << "error: " << 640-center_x << endl;
+  }
+
+  l_descent = 0;
+  r_descent = 0;
+
+  /****************publish******************/
+
+  std_msgs::Int32MultiArray imshow_msg;
+  imshow_msg.data.clear();
+
+  int sendData[8] = {l_x1,l_x2,l_y1,l_y2,r_x1,r_x2,r_y1,r_y2};
+  for (int i = 0; i < 8; i++)
+	{
+		imshow_msg.data.push_back(sendData[i]);
+	}
+  imshow_pub.publish(imshow_msg);
+
+  /*------------------------------------------*/
+
+  sherlotics::LINEtoPID send_msg;
+  if(leftLine_ok==1 && rightLine_ok==1){ // 양쪽
+    send_msg.data = 640-center_x;
+    // cout << "---------------both!!!!!!!!------------" << endl;
+    // cout << "error: " << 640-center_x << endl;
+  }
+  else if(leftLine_ok==1 && rightLine_ok==0){ // 왼쪽만
+    send_msg.data = -left_x;
+    // cout << "---------------Left-----------------" << endl;
+    // cout << "error: " << -left_x << endl;
+
+  }
+  else if(leftLine_ok==0 && rightLine_ok==1){ // 오른쪽만
+    send_msg.data = 640-right_x;
+    // cout << "---------------Right-----------------" << endl;
+    // cout << "error: " << 640-right_x << endl;
+  }
+  else if(leftLine_ok==0 && rightLine_ok==0){ // 없음
+    send_msg.data = 0;
+    // cout << "-----------****nothing****-------------" << endl;
+    // cout << "error: 0" << endl;
+  }
+
+  pub.publish(send_msg);// + left - right
 
   waitKey(WAITKEYSIZE);
 }
