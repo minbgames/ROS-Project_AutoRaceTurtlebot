@@ -1,2 +1,2 @@
-model_checkpoint_path: "/home/m/catkin_ws/src/sherlotics/data/Turtlebot_Learning_Data.ckpt"
-all_model_checkpoint_paths: "/home/m/catkin_ws/src/sherlotics/data/Turtlebot_Learning_Data.ckpt"
+model_checkpoint_path: "/home/sher/catkin_ws/src/sherlotics/data/Turtlebot_Learning_Data.ckpt"
+all_model_checkpoint_paths: "/home/sher/catkin_ws/src/sherlotics/data/Turtlebot_Learning_Data.ckpt"

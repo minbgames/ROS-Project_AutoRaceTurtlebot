@@ -121,7 +121,7 @@ generate_messages(
 catkin_package(
   #INCLUDE_DIRS include
   LIBRARIES sherlotics
-  CATKIN_DEPENDS roscpp std_msgs geometry_msgs actionlib_msgs sensor_msgs
+  CATKIN_DEPENDS roscpp std_msgs geometry_msgs actionlib_msgs sensor_msgs message_runtime
 )
 
 ###########

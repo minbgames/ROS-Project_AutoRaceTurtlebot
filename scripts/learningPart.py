@@ -70,7 +70,7 @@ def callback(msg):
     robotMode = 0
     sess.run(tf.global_variables_initializer())
     saver = tf.train.Saver()
-    saver.restore(sess, "/home/m/catkin_ws/src/sherlotics/data/Turtlebot_Learning_Data.ckpt")
+    saver.restore(sess, "/home/sher/catkin_ws/src/sherlotics/data/Turtlebot_Learning_Data.ckpt")
 
     x_data = sess.run(tf.reshape(cv_image, shape=[1,TOTAL_IMAGE_SIZE]))
     traffic_number = sess.run(prediction, feed_dict={X: x_data})
@@ -79,7 +79,7 @@ def callback(msg):
     final_number=-1
     if traffic_softmax[0,traffic_number] > 0.99:
         final_number = traffic_number
-        
+
     if final_number == 0:
         robotMode = 1
     elif final_number == 1:

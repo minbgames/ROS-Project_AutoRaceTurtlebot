@@ -91,7 +91,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 
 
   cvtColor(image, allGrayImage, COLOR_BGR2GRAY);
-  inRange(allGrayImage, 0, 0, binaryImage);
+  inRange(allGrayImage, 256, 256, binaryImage);
 
   Size szL = l_binaryImage.size();
   Size szR = r_binaryImage.size();
@@ -124,7 +124,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 
   cout << "linesize: " << lines.size() << endl;
 
-  if(lines.size() > 200) lineSize_ok=0;
+  if(lines.size() > 300) lineSize_ok=0;
   else lineSize_ok=1;
 
   l_line_count = 0;

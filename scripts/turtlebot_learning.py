@@ -80,14 +80,14 @@ upper_red1 = np.array([10,255,255])
 lower_red2 = np.array([170,100,0])
 upper_red2 = np.array([179,255,255])
 
-trafficImage=[0,0,0,0,0]
+trafficImage=[0,0,0,0,0,0,0]
 
 input_data = np.array([])
 for i in range(0,VARIETY_SIZE,1):
     for j in range(0,DATA_SIZE/VARIETY_SIZE,1):
         #print i
-        print '/home/m/catkin_ws/src/sherlotics/scripts/img_data/'+str(i+1)+'_'+str(j+1)+'.jpg'
-        img = cv2.imread('/home/m/catkin_ws/src/sherlotics/scripts/img_data/'+str(i+1)+'_'+str(j+1)+'.jpg', cv2.IMREAD_COLOR)
+        print '/home/sher/catkin_ws/src/sherlotics/scripts/img_data/'+str(i+1)+'_'+str(j+1)+'.jpg'
+        img = cv2.imread('/home/sher/catkin_ws/src/sherlotics/scripts/img_data/'+str(i+1)+'_'+str(j+1)+'.jpg', cv2.IMREAD_COLOR)
         resized_img = cv2.resize(img, (IMAGE_SIZE, IMAGE_SIZE), interpolation=cv2.INTER_CUBIC)
         resized_img = resized_img / 255.0
         stack = np.array(resized_img)
@@ -196,7 +196,7 @@ while(True):
             elif optionKey == 8: # 백스페이스 weight 저장
                 print "weight 저장"
                 saver = tf.train.Saver()
-                save_path = saver.save(sess, "/home/m/catkin_ws/src/sherlotics/data/Turtlebot_Learning_Data.ckpt")
+                save_path = saver.save(sess, "/home/sher/catkin_ws/src/sherlotics/data/Turtlebot_Learning_Data.ckpt")
                 break
             elif optionKey == 27: #esc 나가기
                 print "취소"
