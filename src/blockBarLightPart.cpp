@@ -247,6 +247,8 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   // cout << "ratio_g: " << ratio3 << endl;
   //---------------------condition-------------------------
 
+   // 1_block bar 2_light red 3_light green
+
   if(height>BLOCKHEIGHT_MIN && height<BLOCKHEIGHT_MAX ){
     if(width>BLOCKWIDTH_MIN && width<BLOCKWIDTH_MAX ){
       if(ratio>BLOCKRATIO_MIN && ratio<BLOCKRATIO_MAX ){
@@ -260,7 +262,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     if(width2>R_LIGHTWIDTH_MIN && width2<R_LIGHTWIDTH_MAX ){
       if(ratio2>LIGHTRATIO_MIN && ratio2<LIGHTRATIO_MAX ){
         redlight_ok=1;
-        existence_ok=0;
+        existence_ok=2;
       }
     }
   }
@@ -270,7 +272,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     if(width3>Y_LIGHTWIDTH_MIN && width3<Y_LIGHTWIDTH_MAX ){
       if(ratio3>LIGHTRATIO_MIN && ratio3<LIGHTRATIO_MAX ){
         yellowlight_ok=1;
-        existence_ok=0;
+        existence_ok=3;
       }
     }
   }

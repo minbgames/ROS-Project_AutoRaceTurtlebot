@@ -70,7 +70,7 @@ def callback(msg):
     robotMode = 0
     sess.run(tf.global_variables_initializer())
     saver = tf.train.Saver()
-    saver.restore(sess, "/home/sher/catkin_ws/src/sherlotics/data/Turtlebot_Learning_Data.ckpt")
+    saver.restore(sess, "/home/m/catkin_ws/src/sherlotics/data/Turtlebot_Learning_Data.ckpt")
 
     x_data = sess.run(tf.reshape(cv_image, shape=[1,TOTAL_IMAGE_SIZE]))
     traffic_number = sess.run(prediction, feed_dict={X: x_data})

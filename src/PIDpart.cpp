@@ -7,6 +7,7 @@
 #include <std_msgs/MultiArrayDimension.h>
 #include <sherlotics/variable.hpp>
 #include <iostream>
+#include <ctime>
 
 using namespace std;
 
@@ -27,9 +28,13 @@ int obstacle_ok=0;
 float linear_velocity=0;
 float angular_velocity=0;
 
+int light_flag_green = 1, light_flag_red = 1;
+double time_gap_green = 0, time_gap_red = 0;
+time_t startTime_green=0, startTime_red=0, currentTime=0;
+
 void msgCallback1(const sherlotics::BLOCKLIGHTtoPID::ConstPtr& msg ) //1 and 0
 {
-  obstacle_ok=msg->data;
+  obstacle_ok=msg->data;   // 1_block bar, 2_light red, 3_light green
 }
 
 void msgCallback3(const sherlotics::CENTERtoPID::ConstPtr& msg ) //mode
@@ -39,6 +44,46 @@ void msgCallback3(const sherlotics::CENTERtoPID::ConstPtr& msg ) //mode
 
 void msgCallback2(const sherlotics::LINEtoPID::ConstPtr& msg )
 {
+  currentTime = clock();
+
+  if(light_flag_green == 1){
+    if(obstacle_ok == 3){
+      light_flag_green=0;
+      startTime_green = clock();
+    }
+  }
+
+  if(light_flag_green==0){
+    time_gap_green= (float)(currentTime-startTime_green)/10000;
+    cout << "time_gap_green: " << time_gap_green << endl;
+    if(time_gap_green<20){
+      obstacle_ok = 4; // green
+    }
+    else{
+      light_flag_green=-1;
+    }
+  }
+
+  if(light_flag_red == 1){
+    if(obstacle_ok == 2){
+      if(light_flag_green==-1){
+        light_flag_red=0;
+        startTime_red = clock();
+      }
+    }
+  }
+
+  if(light_flag_red==0){
+    time_gap_red= (float)(currentTime-startTime_red)/10000;
+    cout << "time_gap_red: " << time_gap_red << endl;
+    if(time_gap_red<20){
+      obstacle_ok = 5; // red
+    }
+    else{
+      light_flag_red=-1;
+    }
+  }
+
   linear_velocity=INITIALVELOCITY;
 
   line_gap=(float)(msg->data);
@@ -64,11 +109,11 @@ void msgCallback2(const sherlotics::LINEtoPID::ConstPtr& msg )
     cout << "obstacle_ok: " << obstacle_ok <<endl;
   }
 
-  if(obstacle_ok==2){
-    linear_velocity=0.03;
+  if(obstacle_ok==4){
+    linear_velocity=0.02;
   }
 
-  if(obstacle_ok==1){
+  if((obstacle_ok==1) || (obstacle_ok==5)){
     linear_velocity=0;
     angular_velocity=0;
   }

@@ -12,8 +12,13 @@
 
 using namespace std;
 
+#define GRAY_VERSION 1
+#define COLOR_VERSION 2
+#define MAIN_VERSION 3
+
 /********************************CHANGE******************************/
-int ShowBin_li = 0;
+int lineVersion = GRAY_VERSION;
+int ShowBin_li = 1;
 
 Scalar lowerWhite_li(200);
 Scalar upperWhite_li(255);
@@ -24,12 +29,6 @@ Scalar upperYellow_li(45, 100, 255);
 
 Scalar lowerBlue_li(100, 50, 0);
 Scalar upperBlue_li(140, 255, 255);
-
-#define GRAY_VERSION 1
-#define COLOR_VERSION 2
-#define MAIN_VERSION 3
-
-int lineVersion = GRAY_VERSION;
 
 Mat image;
 Mat leftCutImage;
@@ -122,7 +121,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   int x1[500], y1[500], x2[500], y2[500];
   int l_x1_sum=0, l_y1_sum=0, l_x2_sum=0, l_y2_sum=0, r_x1_sum=0, r_y1_sum=0, r_x2_sum=0, r_y2_sum=0;
 
-  cout << "linesize: " << lines.size() << endl;
+  // cout << "linesize: " << lines.size() << endl;
 
   if(lines.size() > 300) lineSize_ok=0;
   else lineSize_ok=1;
