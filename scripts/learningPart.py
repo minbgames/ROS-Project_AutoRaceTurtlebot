@@ -21,11 +21,14 @@ IMAGE_COLOR = 3
 TOTAL_IMAGE_SIZE = IMAGE_SIZE * IMAGE_SIZE * IMAGE_COLOR
 VARIETY_SIZE = 6
 COUNT = 0
+flag1 = 1
+flag2 = 1
 #W1 b1 W2 b2 W3 b3 W4 b4 W5 b5
 
 graph1 = tf.Graph()
 
 with graph1.as_default():
+
     X = tf.placeholder(tf.float32, [None, TOTAL_IMAGE_SIZE]) # 50*50*3
 
     W1 = tf.get_variable("W1", shape=[TOTAL_IMAGE_SIZE, 512],
@@ -59,6 +62,7 @@ with graph1.as_default():
 #----------------------------------------------------------------
 
 def callback(msg):
+  global flag1, flag2
   try:
     cv_image = bridge.imgmsg_to_cv2(msg, "bgr8")
   except CvBridgeError as e:
@@ -75,24 +79,30 @@ def callback(msg):
     x_data = sess.run(tf.reshape(cv_image, shape=[1,TOTAL_IMAGE_SIZE]))
     traffic_number = sess.run(prediction, feed_dict={X: x_data})
     traffic_softmax = sess.run(softmax, feed_dict={X: x_data})
-    #print traffic_number
+    print traffic_number
+    print traffic_softmax
     final_number=-1
-    if traffic_softmax[0,traffic_number] > 0.99:
+    if traffic_softmax[0,traffic_number] > 0.9:
         final_number = traffic_number
 
+
     if final_number == 0:
-        robotMode = 1
+        if flag1 == 1:
+            robotMode = 1
+            flag1 = 0
     elif final_number == 1:
-        robotMode = 2
+        if flag2 == 1:
+            robotMode = 2
+            flag2 = 0
   try:
     if robotMode != 0:
       pub.publish(robotMode)
   except CvBridgeError as e:
     print(e)
 
-pub = rospy.Publisher('LEARNINGtoCENTER_msg',LEARNINGtoCENTER, queue_size = 1)
+pub = rospy.Publisher('LEARNINGtoCENTER_msg',LEARNINGtoCENTER, queue_size = 100)
 
 bridge = CvBridge()
-image_sub = rospy.Subscriber("TRAFFICtoLEARNING_msg",Image, callback, queue_size = 1)
+image_sub = rospy.Subscriber("TRAFFICtoLEARNING_msg",Image, callback, queue_size = 100)
 
 rospy.spin()

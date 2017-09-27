@@ -18,7 +18,7 @@ using namespace std;
 
 /********************************CHANGE******************************/
 int lineVersion = GRAY_VERSION;
-int ShowBin_li = 1;
+int ShowBin_li = 0;
 
 Scalar lowerWhite_li(200);
 Scalar upperWhite_li(255);
@@ -285,6 +285,10 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "linePart_node");
+
+  std::ifstream file2("/home/m/initmode.txt");
+  file2 >> robotMode;
+  file2.close();
 
   ros::NodeHandle nh;
   image_transport::ImageTransport it(nh);

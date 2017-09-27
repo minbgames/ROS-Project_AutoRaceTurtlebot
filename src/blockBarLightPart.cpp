@@ -262,7 +262,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     if(width2>R_LIGHTWIDTH_MIN && width2<R_LIGHTWIDTH_MAX ){
       if(ratio2>LIGHTRATIO_MIN && ratio2<LIGHTRATIO_MAX ){
         redlight_ok=1;
-        existence_ok=2;
+        //existence_ok=2;
       }
     }
   }
@@ -272,7 +272,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     if(width3>Y_LIGHTWIDTH_MIN && width3<Y_LIGHTWIDTH_MAX ){
       if(ratio3>LIGHTRATIO_MIN && ratio3<LIGHTRATIO_MAX ){
         yellowlight_ok=1;
-        existence_ok=3;
+        //existence_ok=3;
       }
     }
   }
@@ -312,6 +312,10 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "blockBarLightPart_node");
+
+  std::ifstream file2("/home/m/initmode.txt");
+  file2 >> robotMode;
+  file2.close();
 
   ros::NodeHandle nh;
   image_transport::ImageTransport it(nh);

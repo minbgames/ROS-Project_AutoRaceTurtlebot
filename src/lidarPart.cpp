@@ -13,15 +13,12 @@
 #include <iostream>
 #include <cmath>
 
-#define LIDAR_RANGE 70
+#define LIDAR_RANGE 80
 #define ANGLEHAT_GAP M_PI/2.0
 #define AVOID_GAP 30
 
 #define LENGTH_MIN 100
 #define AVOID_LENGTH_MAX 60
-
-#define GOAL_DISTANCE 0.1
-
 
 using namespace std;
 using namespace cv;
@@ -40,8 +37,11 @@ int final_dot, avoid_final_dot;
 
 double middle_angle;
 
-double object_x=2;
-double object_y=2;
+double object_x=2.5;
+double object_y=2.0;
+
+#define DISTANCE_ERROR_MAX 2.7
+#define AVOID_NUMBER_MAX 5
 
 ros::Publisher pub;
 ros::Publisher mode_pub;
@@ -119,13 +119,21 @@ void scanCallback(const sensor_msgs::LaserScan::ConstPtr& msg ) //1 and 0
   x_distance = object_x-x_hat;
   y_distance = object_y-y_hat;
 
-  distance_error = sqrt(pow(x_distance,2)+pow(y_distance,2));
 
+  distance_error = (float)(sqrt(pow(x_distance,2)+pow(y_distance,2)));
+
+
+  cout << "x_hat: " << x_hat << endl;
+  cout << "y_hat: " << y_hat << endl;
   cout << "x_distance:" << x_distance <<endl;
   cout << "y_distance:" << y_distance <<endl;
   cout << "distance_error:" << distance_error <<endl;
 
-  if(0/*distance_error<GOAL_DISTANCE*/) robotMode=NORMAL_MODE;
+  if(x_distance<0.01){
+    if(y_distance<0.01){
+        robotMode=NORMAL_MODE;
+    }
+  }
 
   if(x_distance == 0){
     if(y_distance>=0) object_angle = M_PI/2.0;
@@ -247,7 +255,7 @@ void scanCallback(const sensor_msgs::LaserScan::ConstPtr& msg ) //1 and 0
   int avoid_ok=0;
 
 
-  if(avoid_number > 10){
+  if(avoid_number > AVOID_NUMBER_MAX){
     avoid_ok=1;
   }
 
@@ -340,7 +348,9 @@ void scanCallback(const sensor_msgs::LaserScan::ConstPtr& msg ) //1 and 0
         theta_3 = test_2 + (360-theta_gap);
       }
       else{
-        theta_3 = test_2 + (360-theta_gap)*3/4;
+        if(distance_error<DISTANCE_ERROR_MAX){
+          theta_3 = test_2 + (360-theta_gap)*3/4;
+        }
       }
     }
     else if(test_2 < test_1){
@@ -348,7 +358,9 @@ void scanCallback(const sensor_msgs::LaserScan::ConstPtr& msg ) //1 and 0
         theta_3 = test_1;
       }
       else{
-        theta_3 = test_1 + (360-theta_gap)/4;
+        if(distance_error<DISTANCE_ERROR_MAX){
+          theta_3 = test_1 + (360-theta_gap)/4;
+        }
       }
     }
   }
@@ -358,7 +370,9 @@ void scanCallback(const sensor_msgs::LaserScan::ConstPtr& msg ) //1 and 0
         theta_3 = test_1;
       }
       else{
-        theta_3 = test_1+theta_gap/4;
+        if(distance_error<DISTANCE_ERROR_MAX){
+          theta_3 = test_1+theta_gap/4;
+        }
       }
     }
     else if(test_2 < test_1){
@@ -366,9 +380,15 @@ void scanCallback(const sensor_msgs::LaserScan::ConstPtr& msg ) //1 and 0
         theta_3 = test_2+theta_gap;
       }
       else{
-        theta_3 = test_2+theta_gap*3/4;
+        if(distance_error<DISTANCE_ERROR_MAX){
+          theta_3 = test_2+theta_gap*3/4;
+        }
       }
     }
+  }
+
+  if(distance_error>(sqrt(pow(object_x,2)+pow(object_y,2))-0.3)){
+    theta_3=0;
   }
 
   if(theta_3 > 180) theta_3 = theta_3 - 360;
@@ -440,6 +460,11 @@ int main(int argc, char **argv)
 // 노드 메인 함수
 {
   ros::init(argc, argv, "lidarPart_node"); // 노드명 초기화
+
+  std::ifstream file2("/home/m/initmode.txt");
+  file2 >> robotMode;
+  file2.close();
+
   ros::NodeHandle nh;
   image_transport::ImageTransport it(nh);
 

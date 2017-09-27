@@ -2,12 +2,14 @@
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <fstream>
+
 
 using namespace cv;
 
 #define MORSIZE 3
 #define WAITKEYSIZE 1
-#define QUEUESIZE 1
+#define QUEUESIZE 100
 
 //------------display-------------
 
@@ -27,7 +29,10 @@ bool disp_pose = 0;
 #define LIDAR_MODE 2
 #define NORMAL_TO_PARKING 3
 
+
 int robotMode = NORMAL_MODE;
+int mode_flag = -1;
+
 //----------PID part-----------
 
 float goal=0;
@@ -76,14 +81,14 @@ int bottomRect_l=200;
 
 //--------traffic part-------
 
-int leftRect_tr_1=460;
+int leftRect_tr_1=320;
 int topRect_tr_1=0;
 int rightRect_tr_1=640;
 int bottomRect_tr_1=200;
 
 int leftRect_tr_2=0;
 int topRect_tr_2=0;
-int rightRect_tr_2=180;
+int rightRect_tr_2=320;
 int bottomRect_tr_2=200;
 //----------imshow--------------
 

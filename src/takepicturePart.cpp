@@ -13,8 +13,8 @@ using namespace std;
 
 int ShowBin_pic = 0;
 
-Scalar lowerBlue_tr(100, 100, 0);
-Scalar upperBlue_tr(130, 255, 255);
+Scalar lowerBlue_tr(101, 100, 82);
+Scalar upperBlue_tr(114, 190, 129);
 Scalar lowerRed1_tr(0, 100, 0);
 Scalar upperRed1_tr(10, 255, 255);
 Scalar lowerRed2_tr(170, 100, 0);
@@ -163,7 +163,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     resize( takePicture, takePicture, Size( 50, 50 ), 0, 0, CV_INTER_CUBIC );
     imshow("takePicture",takePicture);
 
-
+    i_num = 0;
     char str[50] = "";
     sprintf(num_i, "%d", i_num+1);
     sprintf(num_j, "%d", j_num+1);

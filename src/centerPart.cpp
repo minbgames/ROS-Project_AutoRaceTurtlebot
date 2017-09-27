@@ -121,6 +121,10 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "centerPart_node");
 
+  std::ifstream file2("/home/m/initmode.txt");
+  file2 >> robotMode;
+  file2.close();
+
   ros::NodeHandle nh;
   image_transport::ImageTransport it(nh);
   image_transport::Subscriber sub = it.subscribe("image_raw", QUEUESIZE, imageCallback);

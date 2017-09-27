@@ -18,18 +18,18 @@ using namespace std;
 
 int ShowBin_tr = 0;
 
-#define TRAFFICRATIO_MAX 1.4
-#define TRAFFICRATIO_MIN 0.6
-#define TRAFFICWIDTH_MAX 80
-#define TRAFFICWIDTH_MIN 50
-#define TRAFFICHEIGHT_MAX 80
-#define TRAFFICHEIGHT_MIN 50
+#define TRAFFICRATIO_MAX 1.3
+#define TRAFFICRATIO_MIN 0.7
+#define TRAFFICWIDTH_MAX 90
+#define TRAFFICWIDTH_MIN 40
+#define TRAFFICHEIGHT_MAX 90
+#define TRAFFICHEIGHT_MIN 40
 
-Scalar lowerBlue_tr(100, 100, 0);
-Scalar upperBlue_tr(130, 255, 255);
+Scalar lowerBlue_tr(101, 100, 82);
+Scalar upperBlue_tr(114, 190, 129);
 Scalar lowerRed1_tr(0, 100, 0);
-Scalar upperRed1_tr(10, 255, 255);
-Scalar lowerRed2_tr(170, 100, 0);
+Scalar upperRed1_tr(25, 255, 255);
+Scalar lowerRed2_tr(160, 100, 0);
 Scalar upperRed2_tr(179, 255, 255);
 
 /********************************CHANGE******************************/
@@ -64,7 +64,7 @@ ros::Publisher imshow_pub;
 
 void modeCallback(const sherlotics::CENTERtoTRAFFIC::ConstPtr& msg )
 {
-  robotMode=msg->data;
+  // robotMode=msg->data;
 }
 
 void trafficImageCallback(const sensor_msgs::ImageConstPtr& msg)
@@ -174,6 +174,11 @@ void trafficImageCallback(const sensor_msgs::ImageConstPtr& msg)
 
   //---------------------condition-------------------------
 
+  //
+  // cout << "width: " << width << endl;
+  // cout << "height: " << height << endl;
+  // cout << "ratio: " << ratio << endl;
+
   if(height>TRAFFICHEIGHT_MIN && height<TRAFFICHEIGHT_MAX ){
     if(width>TRAFFICWIDTH_MIN && width<TRAFFICWIDTH_MAX ){
       if(ratio>TRAFFICRATIO_MIN && ratio<TRAFFICRATIO_MAX ){
@@ -181,8 +186,9 @@ void trafficImageCallback(const sensor_msgs::ImageConstPtr& msg)
       }
     }
   }
-
+  // cout << "traffic_ok: " << traffic_ok << endl;
   if(traffic_ok){
+
     Rect rect(Point(leftRect_tr+left,topRect_tr+top), Point(leftRect_tr+left+width,topRect_tr+top+height));
 
     wantedImage = image_raw(rect);
@@ -191,11 +197,10 @@ void trafficImageCallback(const sensor_msgs::ImageConstPtr& msg)
     //cvtColor(resizedImage, traffic_to_learning_image, CV_BGR2GRAY);
 
     //imshow("traffic_to_learning_image",traffic_to_learning_image);
-    if(robotMode==NORMAL_MODE){
-      sensor_msgs::ImagePtr learningSignMsg;
-      learningSignMsg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", traffic_to_learning_image).toImageMsg();
-      learningSignPub.publish(learningSignMsg);
-    }
+
+    sensor_msgs::ImagePtr learningSignMsg;
+    learningSignMsg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", traffic_to_learning_image).toImageMsg();
+    learningSignPub.publish(learningSignMsg);
   }
   else{
     left=0, top=0, width=0, height=0;
@@ -210,13 +215,20 @@ void trafficImageCallback(const sensor_msgs::ImageConstPtr& msg)
 	{
 		imshow_msg.data.push_back(sendData[i]);
 	}
-  imshow_pub.publish(imshow_msg);
+
+  if(robotMode==NORMAL_MODE){
+    //imshow_pub.publish(imshow_msg);
+  }
 
   waitKey(WAITKEYSIZE);
 }
 
 int main(int argc, char **argv)
 {
+  std::ifstream file2("/home/m/initmode.txt");
+  file2 >> robotMode;
+  file2.close();
+
   ros::init(argc, argv, "trafficPart_node");
 
   ros::NodeHandle nh;
@@ -224,7 +236,7 @@ int main(int argc, char **argv)
   image_transport::Subscriber sub = it.subscribe("normalMode_msg", QUEUESIZE, trafficImageCallback);
   ros::Subscriber mode_sub = nh.subscribe("CENTERtoTRAFFIC_msg", QUEUESIZE, modeCallback);
 
-  learningSignPub = it.advertise("TRAFFICtoLEARNING_msg", QUEUESIZE);
+  learningSignPub = it.advertise("TRAFFICtoLEARNING_msg", 100);
   imshow_pub = nh.advertise<std_msgs::Int32MultiArray>("TRAFFICtoIMSHOW_msg", QUEUESIZE);
 
   ros::spin();

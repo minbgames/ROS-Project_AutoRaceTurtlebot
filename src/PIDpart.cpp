@@ -2,6 +2,7 @@
 #include <sherlotics/LINEtoPID.h>
 #include <sherlotics/BLOCKLIGHTtoPID.h>
 #include <sherlotics/CENTERtoPID.h>
+#include <std_msgs/Float32.h>
 #include <std_msgs/Float32MultiArray.h>
 #include <std_msgs/MultiArrayLayout.h>
 #include <std_msgs/MultiArrayDimension.h>
@@ -10,6 +11,10 @@
 #include <ctime>
 
 using namespace std;
+
+#define ULTRA_TIME_GAP 0.2
+#define LIGHT_TIME_GAP1 0.15
+#define LIGHT_TIME_GAP2 0.2
 
 ros::Publisher pub;
 
@@ -27,10 +32,26 @@ float filtering_error=0;
 int obstacle_ok=0;
 float linear_velocity=0;
 float angular_velocity=0;
+float ultra_distance = 0;
+int light_flag = 0, ultra_flag =0;
+double time_gap = 0;
+time_t startTime1=0, startTime2=0, startTime3=0, currentTime=0;
 
-int light_flag_green = 1, light_flag_red = 1;
-double time_gap_green = 0, time_gap_red = 0;
-time_t startTime_green=0, startTime_red=0, currentTime=0;
+void msgCallback4(const std_msgs::Float32::ConstPtr& msg ) //1 and 0
+{
+  ultra_distance=msg->data;
+  cout << "ultra_distance: " << ultra_distance << endl;
+  if(ultra_distance<11 && ultra_distance > 9){
+    if(ultra_flag == 0){
+        ultra_flag=1;
+    }
+  }
+  else{
+    if(ultra_flag == 0){
+      //cout << "ultra_distance: " << ultra_distance << endl;
+    }
+  }
+}
 
 void msgCallback1(const sherlotics::BLOCKLIGHTtoPID::ConstPtr& msg ) //1 and 0
 {
@@ -45,44 +66,94 @@ void msgCallback3(const sherlotics::CENTERtoPID::ConstPtr& msg ) //mode
 void msgCallback2(const sherlotics::LINEtoPID::ConstPtr& msg )
 {
   currentTime = clock();
+  obstacle_ok=0;
 
-  if(light_flag_green == 1){
-    if(obstacle_ok == 3){
-      light_flag_green=0;
-      startTime_green = clock();
-    }
-  }
+  //cout << "mode_flag: " << mode_flag << endl;
 
-  if(light_flag_green==0){
-    time_gap_green= (float)(currentTime-startTime_green)/10000;
-    cout << "time_gap_green: " << time_gap_green << endl;
-    if(time_gap_green<20){
-      obstacle_ok = 4; // green
+  if(mode_flag == 0){
+    if(light_flag == 0){
+        light_flag=1;
+        startTime1 = clock();
     }
-    else{
-      light_flag_green=-1;
-    }
-  }
 
-  if(light_flag_red == 1){
-    if(obstacle_ok == 2){
-      if(light_flag_green==-1){
-        light_flag_red=0;
-        startTime_red = clock();
+    if(light_flag==1){
+      time_gap= (float)(currentTime-startTime1)/CLOCKS_PER_SEC;
+      //cout << "time_gap_1: " << time_gap << endl;
+      if(time_gap<LIGHT_TIME_GAP1){
+        obstacle_ok = 4;
+      }
+      else{
+        light_flag = 2;
+        startTime2 = clock();
+      }
+    }
+
+    if(light_flag == 2){
+      time_gap= (float)(currentTime-startTime2)/CLOCKS_PER_SEC;
+      //cout << "time_gap_2: " << time_gap << endl;
+      if(time_gap<LIGHT_TIME_GAP2){
+        obstacle_ok = 5;
+      }
+      else{
+        light_flag = -1;
+      }
+    }
+
+    if(ultra_flag==1){
+      startTime3 = clock();
+      ultra_flag=2;
+    }
+
+    if(ultra_flag==2){
+      time_gap= (float)(currentTime-startTime3)/CLOCKS_PER_SEC;
+      //cout << "time_gap_ultra: " << time_gap << endl;
+      if(time_gap<ULTRA_TIME_GAP){
+        obstacle_ok = 5;
+      }
+      else{
+        ultra_flag = -1;
       }
     }
   }
 
-  if(light_flag_red==0){
-    time_gap_red= (float)(currentTime-startTime_red)/10000;
-    cout << "time_gap_red: " << time_gap_red << endl;
-    if(time_gap_red<20){
-      obstacle_ok = 5; // red
-    }
-    else{
-      light_flag_red=-1;
-    }
-  }
+  //
+  // if(light_flag_green == 1){
+  //   if(obstacle_ok == 3){
+  //     light_flag_green=0;
+  //     startTime_green = clock();
+  //   }
+  // }
+  //
+  // if(light_flag_green==0){
+  //   time_gap_green= (float)(currentTime-startTime_green)/10000;
+  //   cout << "time_gap_green: " << time_gap_green << endl;
+  //   if(time_gap_green<30){
+  //     obstacle_ok = 4; // green
+  //   }
+  //   else{
+  //     light_flag_green=-1;
+  //   }
+  // }
+  //
+  // if(light_flag_red == 1){
+  //   if(obstacle_ok == 2){
+  //     if(light_flag_green==-1){
+  //       light_flag_red=0;
+  //       startTime_red = clock();
+  //     }
+  //   }
+  // }
+  //
+  // if(light_flag_red==0){
+  //   time_gap_red= (float)(currentTime-startTime_red)/10000;
+  //   cout << "time_gap_red: " << time_gap_red << endl;
+  //   if(time_gap_red<20){
+  //     obstacle_ok = 5; // red
+  //   }
+  //   else{
+  //     light_flag_red=-1;
+  //   }
+  // }
 
   linear_velocity=INITIALVELOCITY;
 
@@ -107,10 +178,6 @@ void msgCallback2(const sherlotics::LINEtoPID::ConstPtr& msg )
 
   if(disp_obstacle){
     cout << "obstacle_ok: " << obstacle_ok <<endl;
-  }
-
-  if(obstacle_ok==4){
-    linear_velocity=0.02;
   }
 
   if((obstacle_ok==1) || (obstacle_ok==5)){
@@ -144,12 +211,17 @@ void msgCallback2(const sherlotics::LINEtoPID::ConstPtr& msg )
     /***********linear_velocity,angular_velocity*********************/
   }
 
+  // if(obstacle_ok==4){
+  //   angular_velocity=0;
+  // }
+
   if(disp_angular_velocity) cout << "angular_velocity" << angular_velocity << endl;
   if(disp_linear_velocity) cout << "linear_velocity" << linear_velocity << endl;
 
   std_msgs::Float32MultiArray PID_msg;
   PID_msg.data.clear();
 
+  //float sendData[2] = {0,0};
   float sendData[2] = {linear_velocity,angular_velocity};
 
   for (int i = 0; i < 2; i++)
@@ -163,11 +235,19 @@ int main(int argc, char **argv)
 // 노드 메인 함수
 {
   ros::init(argc, argv, "PIDpart_node"); // 노드명 초기화
+
+  std::ifstream file2("/home/m/initmode.txt");
+  file2 >> robotMode;
+  file2.close();
+
+  mode_flag = robotMode;
+
   ros::NodeHandle nh;
 
   ros::Subscriber sub1 = nh.subscribe("BLOCKLIGHTtoPID_msg", QUEUESIZE, msgCallback1);
   ros::Subscriber sub2 = nh.subscribe("LINEtoPID_msg", QUEUESIZE, msgCallback2);
   ros::Subscriber sub3 = nh.subscribe("CENTERtoPID_msg", QUEUESIZE, msgCallback3);
+  ros::Subscriber sub4 = nh.subscribe("ULTRAtoPID_msg", QUEUESIZE, msgCallback4);
   pub = nh.advertise<std_msgs::Float32MultiArray>("TELEOP_msg", QUEUESIZE);
 
   ros::spin();

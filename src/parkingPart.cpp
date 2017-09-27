@@ -25,18 +25,25 @@
 //시간조정시 90도 회전시간을 기준으로
 //비례하여 나머지 값들을 일괄조정
 //90도 회전시간
-#define ROTATION_VAL 52
+//#define ROTATION_VAL 52 148
+#define ROTATION_VAL 74
 //주차칸 인식시간
-#define PARK1_VAL 6
-#define PARK2_VAL 8
+//#define PARK1_VAL 6 17
+#define PARK1_VAL 8
+//#define PARK2_VAL 8 23
+#define PARK2_VAL 11
 //주차칸 검사시간
-#define DETER_VAL 8
+//#define DETER_VAL 8 23
+#define DETER_VAL 11
 //주차칸 진입시간
-#define IN_VAL 4
+//#define IN_VAL 4 11
+#define IN_VAL 5
 //주차칸내 대기시간
-#define WAIT_VAL 30
+//#define WAIT_VAL 30 30
+#define WAIT_VAL 15
 //주차칸 진출시간
-#define OUT_VAL 8
+//#define OUT_VAL 8 23
+#define OUT_VAL 11
 
 
 using namespace cv;
@@ -74,6 +81,9 @@ int state = 0;
 int stateCnt = 0;
 //동작번호(actToOutput()함수 참조)
 int actNo = 0;
+
+//for debugging
+int testvar = 0;
 
 //엣지추출
 std::vector<Vec4i> lines;
@@ -185,11 +195,13 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     //첫번째 주차칸 인식
     case 0:
       actNo = 1;
+      //actNo = 3;
       robotMode = NORMAL_TO_PARKING;
-      if(numRect == 5 || numRect == 6) {
+      //robotMode = PARKING_MODE;
+      if(numRect == 7 || numRect == 8) {
         ++stateCnt;
       }
-      else if(numRect != 4 && numRect != 6) {
+      else if(numRect != 6 && numRect != 7) {
         stateCnt = 0;
       }
       if(stateCnt >= PARK1_VAL) {
@@ -324,7 +336,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   }
 
 
-  //printf("////////// [ %d %d %d]\n", state, numRect, strictNumRect);
+  printf("////////// [ %d %d %d]\n", state, numRect, strictNumRect);
 
 
   for(int i=0; i<lines.size(); i++) {
@@ -375,6 +387,10 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "parkingPart_node");
 
+  std::ifstream file2("/home/m/initmode.txt");
+  file2 >> robotMode;
+  file2.close();
+
   ros::NodeHandle nh;
   image_transport::ImageTransport it(nh);
   image_transport::Subscriber sub = it.subscribe("parkingMode_msg", QUEUESIZE, imageCallback);
@@ -399,20 +415,20 @@ void actToOutput(int act, float *output)
       output[1] = 0.0f;
       break;
     case 1:
-      output[0] = 0.03f;
+      output[0] = 0.06f;
       output[1] = 0.0f;
       break;
     case 2:
-      output[0] = -0.03f;
+      output[0] = -0.06f;
       output[1] = 0.0f;
       break;
     case 3:
       output[0] = 0.0f;
-      output[1] = 0.1f;
+      output[1] = 0.2f;
       break;
     case 4:
       output[0] = 0.0f;
-      output[1] = -0.1f;
+      output[1] = -0.2f;
       break;
   }
 }

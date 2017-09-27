@@ -1,11 +1,11 @@
 <launch>
   <node pkg="sherlotics" type="centerPart_node" name="centerPart_node"/>
-  <node pkg="sherlotics" type="trafficPart_node" name="trafficPart_node"/>
   <node pkg="sherlotics" type="linePart_node" name="linePart_node"/>
   <node pkg="sherlotics" type="teleopPart.py" name="teleopPart"/>
-  <node pkg="sherlotics" type="blockBarLightPart_node" name="blockBarLightPart_node"/>
   <node pkg="sherlotics" type="PIDpart_node" name="PIDpart_node"/>
   <node pkg="sherlotics" type="parkingPart_node" name="parkingPart_node"/>
   <node pkg="sherlotics" type="lidarPart_node" name="lidarPart_node"/>
-  <node pkg="sherlotics" type="learningPart.py" name="learningPart_node"/>
+  <!--<node pkg="sherlotics" type="blockBarLightPart_node" name="blockBarLightPart_node"/>-->
+  <!--<node pkg="sherlotics" type="trafficPart_node" name="trafficPart_node"/>-->
+  <!--<node pkg="sherlotics" type="learningPart.py" name="learningPart_node"/>-->
 </launch>
