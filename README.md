@@ -1,4 +1,4 @@
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/extzYBgQdGs/0.jpg)](https://www.youtube.com/watch?v=extzYBgQdGs) <- youtube video click!!
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/extzYBgQdGs/0.jpg =640x1480)](https://www.youtube.com/watch?v=extzYBgQdGs)
 
 How to run?
 ======================
