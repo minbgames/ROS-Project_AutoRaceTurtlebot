@@ -1,4 +1,4 @@
-[![Watch the video](https://raw.github.com/GabLeRoux/WebMole/master/ressources/WebMole_Youtube_Video.png)](http://youtu.be/vt5fpE0bzSY)
+[![Watch the video](https://img.youtube.com/vi/<extzYBgQdGs>/default.jpg)](http://youtu.be/extzYBgQdGs)
 
 How to run?
 ======================
